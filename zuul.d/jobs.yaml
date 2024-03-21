@@ -8,15 +8,15 @@
       - nebulous-security-manager-container-images
     description: Build the container images.
     files: &image_files
-      - ^java-spring-boot-demo/
+      - ^security-layer/
     vars: &image_vars
       promote_container_image_job: nebulous-security-manager-upload-container-images
       container_images:
-        - context: java-spring-boot-demo
+        - context: security-layer
           registry: quay.io
-          repository: quay.io/nebulous/security-manager-java-spring-boot-demo
+          repository: quay.io/nebulous/security-manager-security-layer
           namespace: nebulous
-          repo_shortname: security-manager-java-spring-boot-demo
+          repo_shortname: security-manager-security-layer
           repo_description: ""
 
 - job:
@@ -44,7 +44,7 @@
     description: Run Hadolint on Dockerfile(s).
     vars:
       dockerfiles:
-        - java-spring-boot-demo/Dockerfile
+        - security-layer/Dockerfile
 
 - job:
     name: nebulous-security-manager-helm-lint

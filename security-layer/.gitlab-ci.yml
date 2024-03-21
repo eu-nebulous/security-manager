@@ -1,0 +1,9 @@
+image: maven:3.8.4-openjdk-17
+
+stages:
+  - docker-build
+
+docker-build-job:
+  stage: docker-build
+  script:
+    - mvn package -DskipTests -Dquarkus.container-image.build=true

@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: "quay.io/nebulous/security-manager-java-spring-boot-demo"
+  repository: "quay.io/nebulous/security-manager-security-layer"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -38,7 +38,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
 
 ingress:
   enabled: false
@@ -80,3 +80,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+postgresql:
+  global:
+    postgresql:
+      auth:
+        postgresPassword: "nebulous"
+        username: "postgresql"
+        password: "postgresql"
+        database: "postgres"

@@ -25,6 +25,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "nebulous-security-manager.serviceAccountName" . }}
+      initContainers:
+        - name: wait-for-postgresql
+          image: docker.io/bitnami/postgresql:14.3.0
+          command: ['sh', '-c', 'until pg_isready -h nebulous-overlay-network-manager-postgresql -p 5432; do echo waiting for database; sleep 2; done;']
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
