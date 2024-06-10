@@ -13,6 +13,6 @@ jobs:
     name: Build and push security-manager
     uses: eu-nebulous/github-actions/.github/workflows/build-and-push-container-image.yml@main
     with:
-      context: security-manager
+      context: security-layer
       image-name: security-manager
     secrets: inherit
