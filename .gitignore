@@ -1,0 +1,54 @@
+# Exclude specific scripts
+OPA-GATEKEEPER-INSTALL.sh
+OPA-GATEKEEPER-UNINSTALL.sh
+
+# Exclude the opa-gatekeeper-library folder and specific files
+opa-gatekeeper-library/
+
+
+# Maven files
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+.flattened-pom.xml
+
+# Eclipse IDE files
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ IDEA files
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# NetBeans files
+nb-configuration.xml
+
+# Visual Studio Code files
+.vscode/
+.factorypath
+
+# macOS system files
+.DS_Store
+
+# Vim swap files
+*.swp
+*.swo
+
+# Patch files
+*.orig
+*.rej
+
+# Local environment files
+.env
+
+# Quarkus plugin directory
+/.quarkus/cli/plugins/
+
+# K3s configuration file
+src/main/resources/k3s.yaml

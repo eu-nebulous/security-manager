@@ -1,0 +1,12 @@
+# Exclude everything by default
+*
+
+# Include pom.xml and src directory
+!pom.xml
+!src/**
+
+# Include the necessary files from target
+!target/*-runner
+!target/*-runner.jar
+!target/lib/*
+!target/quarkus-app/*
