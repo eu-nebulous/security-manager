@@ -1,0 +1,81 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowedrepos
+  annotations:
+    metadata.gatekeeper.sh/title: "Disallowed Repositories"
+    metadata.gatekeeper.sh/version: 1.0.1
+    description: >-
+      Disallowed container repositories that begin with a string from the specified list.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowedRepos
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            repos:
+              description: The list of prefixes a container image is not allowed to have.
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowedrepos
+
+        import data.lib.strings
+
+        # Function to add 'docker.io/' prefix to unqualified image names
+        qualify_image(image) = qualified_image {
+          not contains(image, "/")
+          qualified_image := sprintf("docker.io/%s", [image])
+        }
+
+        qualify_image(image) = image {
+          contains(image, "/")
+        }
+
+        disallowed_image(image, repos) {
+          some i
+          repo := repos[i]
+          startswith(image, repo)
+        }
+
+        violation[{"msg": msg}] {
+          resource := input.review.object
+          kind := resource.kind
+          containers := kind_containers(kind, resource)
+
+          container := containers[_]
+          qualified_image := qualify_image(container.image)
+          disallowed_image(qualified_image, input.parameters.repos)
+          msg := sprintf("%v <%v> has an invalid image repo <%v>, disallowed repos are %v", [kind, container.name, qualified_image, input.parameters.repos])
+        }
+
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.containers
+        }
+
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.initContainers
+        }
+
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.ephemeralContainers
+        }
+
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.containers
+        }
+
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.initContainers
+        }
+
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.ephemeralContainers
+        }

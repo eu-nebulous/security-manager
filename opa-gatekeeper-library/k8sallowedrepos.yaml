@@ -1,0 +1,90 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepos
+  annotations:
+    metadata.gatekeeper.sh/title: "Allowed Repositories"
+    metadata.gatekeeper.sh/version: 1.0.4
+    description: >-
+      Requires container images in KubeVela Applications to begin with a string from the specified list.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRepos
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            repos:
+              description: The list of prefixes a container image is allowed to have.
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedrepos
+
+        import data.lib.strings
+
+        # Function to add 'docker.io/' prefix to unqualified image names
+        qualify_image(image) = qualified_image {
+          not contains(image, "/")
+          qualified_image := sprintf("docker.io/%s", [image])
+        }
+
+        qualify_image(image) = image {
+          contains(image, "/")
+        }
+
+        valid_image(image, repos) {
+          some i
+          repo := repos[i]
+          startswith(image, repo)
+        }
+
+        violation[{"msg": msg}] {
+          resource := input.review.object
+          kind := resource.kind
+          containers := kind_containers(kind, resource)
+
+          container := containers[_]
+          qualified_image := qualify_image(container.image)
+          not valid_image(qualified_image, input.parameters.repos)
+          msg := sprintf("%v <%v> has an invalid image repo <%v>, allowed repos are %v", [kind, container.name, qualified_image, input.parameters.repos])
+        }
+
+        # Extract containers for Pod kind
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.containers
+        }
+
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.initContainers
+        }
+
+        kind_containers("Pod", pod) = containers {
+          containers := pod.spec.ephemeralContainers
+        }
+
+        # Extract containers for Deployment kind
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.containers
+        }
+
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.initContainers
+        }
+
+        kind_containers("Deployment", deployment) = containers {
+          containers := deployment.spec.template.spec.ephemeralContainers
+        }
+
+        # Extract container images from KubeVela Application kind by iterating over the components
+        kind_containers("Application", application) = containers {
+          containers := [
+            {"name": component.name, "image": component.properties.image} 
+            | component := application.spec.components[_] 
+          ]
+        }

@@ -1,9 +1,9 @@
 # Exclude specific scripts
-OPA-GATEKEEPER-INSTALL.sh
-OPA-GATEKEEPER-UNINSTALL.sh
-
-# Exclude the opa-gatekeeper-library folder and specific files
-opa-gatekeeper-library/
+#OPA-GATEKEEPER-INSTALL.sh
+#OPA-GATEKEEPER-UNINSTALL.sh
+#
+## Exclude the opa-gatekeeper-library folder and specific files
+#opa-gatekeeper-library/
 
 
 # Maven files
