@@ -1,14 +1,18 @@
+# Define the repository URL as an environment variable
+REPO_URL="https://github.com/eu-nebulous/security-manager/blob/dev/opa-gatekeeper-library"
+
+
 # delete the constraint template of "disallowed tags"
-kubectl delete -f  opa-gatekeeper-library/k8sdisallowedtags.yaml
+kubectl delete -f  "$REPO_URL/k8sdisallowedtags.yaml"
 
 # delete the constraint template of "replica limits"
-kubectl delete -f  opa-gatekeeper-library/k8sreplicalimits.yaml
+kubectl delete -f  "$REPO_URL/k8sreplicalimits.yaml"
 
 # delete the constraint template of "disallowed repos"
-kubectl delete -f  opa-gatekeeper-library/k8sdisallowedrepos.yaml
+kubectl delete -f   "$REPO_URL/k8sdisallowedrepos.yaml"
 
 # delete the constraint template of "allowed repos"
-kubectl delete -f  opa-gatekeeper-library/k8sallowedrepos.yaml
+kubectl delete -f   "$REPO_URL/k8sallowedrepos.yaml"
 
 # delete installation of open policy agent
 kubectl delete -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.16.3/deploy/gatekeeper.yaml
