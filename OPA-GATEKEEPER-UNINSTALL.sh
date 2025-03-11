@@ -1,5 +1,5 @@
 # Define the repository URL as an environment variable
-REPO_URL="https://github.com/eu-nebulous/security-manager/blob/dev/opa-gatekeeper-library"
+REPO_URL="https://raw.githubusercontent.com/eu-nebulous/security-manager/dev/opa-gatekeeper-library"
 
 
 # delete the constraint template of "disallowed tags"
