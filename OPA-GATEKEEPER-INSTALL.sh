@@ -21,3 +21,4 @@ kubectl apply -f "$REPO_URL/k8sdisallowedtags.yaml"
 '
 
 echo "OPA Gatekeeper installation completed."
+
