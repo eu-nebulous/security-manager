@@ -1,5 +1,6 @@
 package eu.nebulouscloud.securitymanager.dto;
 
+import eu.nebulouscloud.securitymanager.model.opa.ConstraintType;
 import eu.nebulouscloud.securitymanager.model.opa.match.Kind;
 import eu.nebulouscloud.securitymanager.model.opa.parameters.Range;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,5 @@ public class ConstraintDTO {
     private List<Range> ranges;
     private List<String> tags;
     private List<String> exemptImages;
+    private ConstraintType type;
 }

@@ -36,7 +36,7 @@ public class KubernetesConnectionManager {
             Config config = Config.fromKubeconfig(kubeconfig);
             kubernetesClient = new DefaultKubernetesClient(config);
 
-            String version = kubernetesClient.getVersion().toString();
+            String version = kubernetesClient.getApiVersion().toString();
             LOG.info("Connected to Kubernetes cluster, version: " + version);
         } catch (Exception e) {
             LOG.error("Failed to connect to Kubernetes cluster using kubeconfig", e);
