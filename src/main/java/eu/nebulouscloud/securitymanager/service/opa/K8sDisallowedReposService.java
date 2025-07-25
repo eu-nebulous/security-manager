@@ -1,5 +1,6 @@
 package eu.nebulouscloud.securitymanager.service.opa;
 
+import eu.nebulouscloud.securitymanager.model.opa.ConstraintType;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
@@ -14,7 +15,8 @@ import eu.nebulouscloud.securitymanager.model.opa.disallowed.repository.K8sDisal
 import java.util.List;
 
 @ApplicationScoped
-public class K8sDisallowedReposService {
+public class K8sDisallowedReposService implements ConstraintHandler{
+
 
     private static final Logger logger = Logger.getLogger(K8sDisallowedReposService.class);
 
@@ -24,7 +26,7 @@ public class K8sDisallowedReposService {
     @Inject
     K8sDisallowedReposMapper k8sDisallowedReposMapper;
 
-    public K8sDisallowedRepos createOrUpdateK8sDisallowedRepos(ConstraintDTO dto) {
+    public K8sDisallowedRepos createOrUpdateK8sDisallowedRepos(ConstraintDTO dto){
         try {
             String effectiveNamespace = (dto.getNamespace() != null && !dto.getNamespace().isEmpty()) ? dto.getNamespace() : "default";
 
@@ -84,5 +86,14 @@ public class K8sDisallowedReposService {
         } catch (KubernetesClientException e) {
             throw new KubernetesClientException("Error checking K8sDisallowedRepos existence: " + e.getMessage(), e);
         }
+    }
+    @Override
+    public void createOrUpdate(ConstraintDTO dto) {
+        createOrUpdateK8sDisallowedRepos(dto);
+    }
+
+    @Override
+    public boolean supports(ConstraintDTO dto) {
+        return ConstraintType.DISALLOWED_REPOS.equals(dto.getType());
     }
 }

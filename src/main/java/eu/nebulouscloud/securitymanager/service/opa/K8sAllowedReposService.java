@@ -1,5 +1,6 @@
 package eu.nebulouscloud.securitymanager.service.opa;
 
+import eu.nebulouscloud.securitymanager.model.opa.ConstraintType;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
@@ -15,7 +16,7 @@ import java.util.List;
 
 
 @ApplicationScoped
-public class K8sAllowedReposService {
+public class K8sAllowedReposService implements ConstraintHandler{
 
     private static final Logger logger = Logger.getLogger(K8sAllowedReposService.class);
 
@@ -85,5 +86,15 @@ public class K8sAllowedReposService {
         } catch (KubernetesClientException e) {
             throw new KubernetesClientException("Error checking K8sAllowedRepos existence: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void createOrUpdate(ConstraintDTO dto) {
+        createOrUpdateK8sAllowedRepos(dto);
+    }
+
+    @Override
+    public boolean supports(ConstraintDTO dto) {
+        return ConstraintType.ALLOWED_REPOS.equals(dto.getType());
     }
 }

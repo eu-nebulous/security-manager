@@ -52,3 +52,6 @@ nb-configuration.xml
 
 # K3s configuration file
 src/main/resources/k3s.yaml
+
+docker-compose.yml
+src/main/java/eu/nebulouscloud/securitymanager/service/messaging/ProtonJ2SenderTest.java

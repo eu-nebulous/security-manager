@@ -1,5 +1,6 @@
 package eu.nebulouscloud.securitymanager.service.opa;
 
+import eu.nebulouscloud.securitymanager.model.opa.ConstraintType;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
@@ -14,7 +15,7 @@ import eu.nebulouscloud.securitymanager.model.opa.allowed.K8sReplicaLimits;
 import java.util.List;
 
 @ApplicationScoped
-public class K8sReplicaLimitsService {
+public class K8sReplicaLimitsService implements ConstraintHandler{
 
     private static final Logger logger = Logger.getLogger(K8sReplicaLimitsService.class);
 
@@ -84,5 +85,14 @@ public class K8sReplicaLimitsService {
         } catch (KubernetesClientException e) {
             throw new KubernetesClientException("Error checking K8sReplicaLimits existence: " + e.getMessage(), e);
         }
+    }
+    @Override
+    public void createOrUpdate(ConstraintDTO dto) {
+        createOrUpdateK8sReplicaLimits(dto);
+    }
+
+    @Override
+    public boolean supports(ConstraintDTO dto) {
+        return ConstraintType.REPLICA_LIMITS.equals(dto.getType());
     }
 }
